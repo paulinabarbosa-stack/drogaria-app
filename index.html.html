@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Drogaria Diamante – App</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:#e8f0e8;min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:24px 0 40px}
+.phone{width:390px;background:#fff;border-radius:40px;border:8px solid #1a1a1a;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,0.3)}
+.status-bar{background:#1B5E3B;padding:10px 24px 6px;display:flex;justify-content:space-between}
+.status-bar span{color:#fff;font-size:12px;font-weight:600}
+.topbar{background:#1B5E3B;padding:12px 16px 16px}
+.topbar-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.logo-area{display:flex;align-items:center;gap:10px}
+.logo-icon{width:40px;height:40px;background:#fff;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px}
+.logo-text{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:#fff;line-height:1.2}
+.logo-sub{font-size:10px;color:rgba(255,255,255,0.65)}
+.cart-btn{background:rgba(255,255,255,0.15);border:none;border-radius:10px;padding:8px 12px;color:#fff;font-size:20px;cursor:pointer;position:relative}
+.cart-badge{position:absolute;top:-5px;right:-5px;background:#FF6B35;color:#fff;border-radius:999px;font-size:10px;font-weight:700;padding:1px 6px;min-width:18px;text-align:center}
+.search-bar{background:rgba(255,255,255,0.12);border-radius:12px;padding:10px 14px;display:flex;align-items:center;gap:8px;color:rgba(255,255,255,0.65);font-size:13px;border:1px solid rgba(255,255,255,0.2)}
+.frete-banner{background:#FF6B35;padding:8px 16px;text-align:center;color:#fff;font-size:12px;font-weight:700;letter-spacing:0.3px}
+.content{background:#f0f4f0;padding:14px 12px}
+.section-label{font-size:14px;font-weight:700;color:#1B5E3B;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+.section-label a{font-size:12px;color:#FF6B35;font-weight:500;text-decoration:none}
+.cats{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.cat{background:#fff;border:1.5px solid #ddd;border-radius:20px;padding:6px 14px;font-size:12px;font-weight:600;color:#555;cursor:pointer}
+.cat.active{background:#1B5E3B;color:#fff;border-color:#1B5E3B}
+.produtos{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.prod-card{background:#fff;border-radius:14px;overflow:hidden;border:1px solid #e8e8e8;cursor:pointer;transition:transform 0.15s}
+.prod-card:hover{transform:scale(1.02)}
+.prod-img{height:90px;display:flex;align-items:center;justify-content:center;font-size:44px;position:relative}
+.prod-badge{position:absolute;top:6px;left:6px;background:#FF6B35;color:#fff;font-size:9px;font-weight:800;padding:2px 8px;border-radius:999px}
+.prod-body{padding:10px}
+.prod-name{font-size:12px;font-weight:700;color:#1a1a1a;margin-bottom:2px;line-height:1.3}
+.prod-desc{font-size:10px;color:#999;margin-bottom:8px}
+.prod-price-row{display:flex;align-items:center;justify-content:space-between}
+.prod-old{font-size:10px;color:#ccc;text-decoration:line-through}
+.prod-price{font-size:15px;font-weight:700;color:#1B5E3B}
+.add-btn{background:#1B5E3B;border:none;border-radius:8px;color:#fff;font-size:18px;width:30px;height:30px;cursor:pointer;line-height:1}
+.zap-card{background:#fff;border-radius:16px;padding:16px;margin-bottom:12px;border:1px solid #e0e0e0}
+.zap-title{font-size:14px;font-weight:700;color:#1a1a1a;margin-bottom:3px}
+.zap-sub{font-size:11px;color:#999;margin-bottom:12px;line-height:1.4}
+.zap-btn{background:#25D366;border:none;border-radius:12px;color:#fff;font-size:14px;font-weight:700;padding:13px;width:100%;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
+.pedido-card{background:#fff;border-radius:16px;padding:16px;margin-bottom:12px;border:1px solid #e0e0e0}
+.pedido-title{font-size:14px;font-weight:700;color:#1a1a1a;margin-bottom:14px}
+.pedido-item{display:flex;align-items:center;gap:10px;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid #f5f5f5}
+.pedido-item:last-of-type{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.pedido-emoji{width:48px;height:48px;background:#f0f4f0;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0}
+.pedido-info{flex:1}
+.pedido-name{font-size:12px;font-weight:700;color:#1a1a1a;margin-bottom:4px}
+.qty-ctrl{display:flex;align-items:center;gap:8px}
+.qty-btn{background:#f0f4f0;border:none;border-radius:6px;width:24px;height:24px;font-size:15px;font-weight:700;cursor:pointer;color:#1B5E3B}
+.qty-num{font-size:13px;font-weight:700;min-width:16px;text-align:center;color:#1a1a1a}
+.pedido-val{font-size:14px;font-weight:700;color:#1B5E3B;flex-shrink:0}
+.total-row{background:#f0f4f0;border-radius:12px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;margin:12px 0}
+.total-label{font-size:12px;color:#666;margin-bottom:4px}
+.frete-ok{font-size:10px;background:#e8f5e9;color:#2e7d32;padding:2px 8px;border-radius:999px;font-weight:700;display:inline-block}
+.total-val{font-size:20px;font-weight:800;color:#1B5E3B}
+.toast{background:#1B5E3B;color:#fff;text-align:center;padding:8px 14px;font-size:12px;font-weight:700;border-radius:10px;margin-bottom:10px;display:none}
+.toast.show{display:block}
+.confirmar-btn{background:#1B5E3B;border:none;border-radius:12px;color:#fff;font-size:14px;font-weight:700;padding:14px;width:100%;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
+.bottomnav{background:#fff;border-top:1px solid #eee;display:flex;justify-content:space-around;padding:10px 0 16px}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9px;color:#aaa;cursor:pointer}
+.nav-item.active{color:#1B5E3B;font-weight:700}
+.nav-item span{font-size:22px}
+</style>
+</head>
+<body>
+
+<div class="phone">
+
+  <div class="status-bar">
+    <span>9:41</span>
+    <span>●●● 100%</span>
+  </div>
+
+  <div class="topbar">
+    <div class="topbar-row">
+      <div class="logo-area">
+        <div class="logo-icon">💎</div>
+        <div>
+          <div class="logo-text">Drogaria Diamante</div>
+          <div class="logo-sub">Diamantina, MG · Aberta agora</div>
+        </div>
+      </div>
+      <button class="cart-btn" onclick="rolarPedido()">
+        🛒<span class="cart-badge" id="badge">3</span>
+      </button>
+    </div>
+    <div class="search-bar">🔍 &nbsp;Buscar medicamento ou produto...</div>
+  </div>
+
+  <div class="frete-banner">🚚 ENTREGA GRÁTIS em Diamantina · Pedido mínimo R$ 30,00</div>
+
+  <div class="content">
+
+    <div class="cats">
+      <div class="cat active">Todos</div>
+      <div class="cat">Hipertensão</div>
+      <div class="cat">Vitaminas</div>
+      <div class="cat">Dor e Febre</div>
+      <div class="cat">Diabetes</div>
+      <div class="cat">Beleza</div>
+    </div>
+
+    <div class="section-label">Mais vendidos <a href="#">Ver todos</a></div>
+
+    <div class="produtos">
+
+      <div class="prod-card" onclick="addItem('Losartana 50mg')">
+        <div class="prod-img" style="background:#e8f5e9">💊<div class="prod-badge">-15%</div></div>
+        <div class="prod-body">
+          <div class="prod-name">Losartana 50mg</div>
+          <div class="prod-desc">30 comprimidos</div>
+          <div class="prod-price-row">
+            <div><div class="prod-old">R$ 22,00</div><div class="prod-price">R$ 18,90</div></div>
+            <button class="add-btn">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="prod-card" onclick="addItem('Dipirona 500mg')">
+        <div class="prod-img" style="background:#fff3e0">🌡️<div class="prod-badge">OFERTA</div></div>
+        <div class="prod-body">
+          <div class="prod-name">Dipirona 500mg</div>
+          <div class="prod-desc">20 comprimidos</div>
+          <div class="prod-price-row">
+            <div><div class="prod-old">R$ 12,00</div><div class="prod-price">R$ 9,50</div></div>
+            <button class="add-btn">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="prod-card" onclick="addItem('Vitamina D 2000UI')">
+        <div class="prod-img" style="background:#fffde7">☀️</div>
+        <div class="prod-body">
+          <div class="prod-name">Vitamina D 2000UI</div>
+          <div class="prod-desc">60 cápsulas</div>
+          <div class="prod-price-row">
+            <div><div class="prod-old">&nbsp;</div><div class="prod-price">R$ 24,90</div></div>
+            <button class="add-btn">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="prod-card" onclick="addItem('Omeprazol 20mg')">
+        <div class="prod-img" style="background:#f3e5f5">💜<div class="prod-badge">-20%</div></div>
+        <div class="prod-body">
+          <div class="prod-name">Omeprazol 20mg</div>
+          <div class="prod-desc">28 cápsulas</div>
+          <div class="prod-price-row">
+            <div><div class="prod-old">R$ 18,50</div><div class="prod-price">R$ 14,90</div></div>
+            <button class="add-btn">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="prod-card" onclick="addItem('Atenolol 25mg')">
+        <div class="prod-img" style="background:#e3f2fd">💙</div>
+        <div class="prod-body">
+          <div class="prod-name">Atenolol 25mg</div>
+          <div class="prod-desc">30 comprimidos</div>
+          <div class="prod-price-row">
+            <div><div class="prod-old">&nbsp;</div><div class="prod-price">R$ 11,90</div></div>
+            <button class="add-btn">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="prod-card" onclick="addItem('Paracetamol 750mg')">
+        <div class="prod-img" style="background:#fce4ec">🔴<div class="prod-badge">POPULAR</div></div>
+        <div class="prod-body">
+          <div class="prod-name">Paracetamol 750mg</div>
+          <div class="prod-desc">20 comprimidos</div>
+          <div class="prod-price-row">
+            <div><div class="prod-old">&nbsp;</div><div class="prod-price">R$ 7,90</div></div>
+            <button class="add-btn">+</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="zap-card">
+      <div class="zap-title">💬 Prefere falar com a gente?</div>
+      <div class="zap-sub">Nossa equipe responde rapidinho — inclusive à noite e nos fins de semana!</div>
+      <button class="zap-btn" onclick="abrirZap()">📲 &nbsp;Chamar no WhatsApp</button>
+    </div>
+
+    <div class="pedido-card" id="pedido-section">
+      <div class="pedido-title">🛒 Meu pedido</div>
+
+      <div class="pedido-item">
+        <div class="pedido-emoji">💊</div>
+        <div class="pedido-info">
+          <div class="pedido-name">Losartana 50mg</div>
+          <div class="qty-ctrl">
+            <button class="qty-btn" onclick="mudarQty('q1',-1,18.90)">−</button>
+            <div class="qty-num" id="q1">1</div>
+            <button class="qty-btn" onclick="mudarQty('q1',1,18.90)">+</button>
+          </div>
+        </div>
+        <div class="pedido-val" id="v1">R$ 18,90</div>
+      </div>
+
+      <div class="pedido-item">
+        <div class="pedido-emoji">🌡️</div>
+        <div class="pedido-info">
+          <div class="pedido-name">Dipirona 500mg</div>
+          <div class="qty-ctrl">
+            <button class="qty-btn" onclick="mudarQty('q2',-1,9.50)">−</button>
+            <div class="qty-num" id="q2">1</div>
+            <button class="qty-btn" onclick="mudarQty('q2',1,9.50)">+</button>
+          </div>
+        </div>
+        <div class="pedido-val" id="v2">R$ 9,50</div>
+      </div>
+
+      <div class="pedido-item">
+        <div class="pedido-emoji">☀️</div>
+        <div class="pedido-info">
+          <div class="pedido-name">Vitamina D 2000UI</div>
+          <div class="qty-ctrl">
+            <button class="qty-btn" onclick="mudarQty('q3',-1,24.90)">−</button>
+            <div class="qty-num" id="q3">1</div>
+            <button class="qty-btn" onclick="mudarQty('q3',1,24.90)">+</button>
+          </div>
+        </div>
+        <div class="pedido-val" id="v3">R$ 24,90</div>
+      </div>
+
+      <div class="total-row">
+        <div>
+          <div class="total-label">Total do pedido</div>
+          <div class="frete-ok">🚚 Frete grátis</div>
+        </div>
+        <div class="total-val" id="total">R$ 53,30</div>
+      </div>
+
+      <div class="toast" id="toast">✅ Item adicionado ao pedido!</div>
+
+      <button class="confirmar-btn" onclick="confirmar()">📲 &nbsp;Confirmar pedido via WhatsApp</button>
+    </div>
+
+  </div>
+
+  <div class="bottomnav">
+    <div class="nav-item active"><span>🏠</span>Início</div>
+    <div class="nav-item"><span>🔍</span>Buscar</div>
+    <div class="nav-item"><span>💊</span>Receitas</div>
+    <div class="nav-item"><span>⭐</span>Pontos</div>
+    <div class="nav-item"><span>👤</span>Perfil</div>
+  </div>
+
+</div>
+
+<script>
+const pr={q1:18.90,q2:9.50,q3:24.90};
+const qt={q1:1,q2:1,q3:1};
+function calcTotal(){
+  let t=0;for(let k in qt)t+=qt[k]*pr[k];
+  document.getElementById('total').textContent='R$ '+t.toFixed(2).replace('.',',');
+}
+function mudarQty(id,delta,p){
+  let q=Math.max(1,qt[id]+delta);
+  qt[id]=q;
+  document.getElementById(id).textContent=q;
+  let n=id.replace('q','');
+  document.getElementById('v'+n).textContent='R$ '+(q*pr[id]).toFixed(2).replace('.',',');
+  calcTotal();
+}
+function addItem(nome){
+  const t=document.getElementById('toast');
+  t.textContent='✅ '+nome+' adicionado!';
+  t.classList.add('show');
+  const b=document.getElementById('badge');
+  b.textContent=parseInt(b.textContent)+1;
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+function rolarPedido(){
+  document.getElementById('pedido-section').scrollIntoView({behavior:'smooth'});
+}
+function abrirZap(){
+  const msg=encodeURIComponent('Olá! Gostaria de fazer um pedido na Drogaria Diamante 😊');
+  window.open('https://wa.me/5538999999999?text='+msg,'_blank');
+}
+function confirmar(){
+  const itens='Losartana 50mg x'+qt.q1+'\nDipirona 500mg x'+qt.q2+'\nVitamina D 2000UI x'+qt.q3;
+  const total=document.getElementById('total').textContent;
+  const msg=encodeURIComponent('Olá! Quero confirmar meu pedido:\n\n'+itens+'\n\nTotal: '+total+'\n\n🚚 Entrega grátis!');
+  window.open('https://wa.me/5538999999999?text='+msg,'_blank');
+}
+</script>
+</body>
+</html>
