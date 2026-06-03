@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Drogaria Diamante – App</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:#2d5a3d;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:20px 0 40px}
+.demo-label{color:rgba(255,255,255,0.7);font-size:13px;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:12px}
+.phone{width:375px;background:#fff;border-radius:44px;border:10px solid #111;overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,0.5)}
+.notch{background:#111;height:28px;display:flex;align-items:center;justify-content:center}
+.notch-inner{width:120px;height:18px;background:#111;border-radius:0 0 16px 16px}
+.screen{display:none}
+.screen.active{display:block}
+
+.status{background:#1B5E3B;padding:6px 20px;display:flex;justify-content:space-between}
+.status span{color:#fff;font-size:11px;font-weight:700}
+.topbar{background:#1B5E3B;padding:10px 14px 14px}
+.topbar-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.logo-area{display:flex;align-items:center;gap:10px}
+.logo-icon{width:38px;height:38px;background:#fff;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px}
+.logo-text{font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:#fff;line-height:1.1}
+.logo-sub{font-size:10px;color:rgba(255,255,255,0.6)}
+.icon-btn{background:rgba(255,255,255,0.15);border:none;border-radius:10px;padding:7px 10px;color:#fff;font-size:18px;cursor:pointer;position:relative}
+.badge{position:absolute;top:-5px;right:-5px;background:#FF6B35;color:#fff;border-radius:999px;font-size:9px;font-weight:800;padding:1px 5px;min-width:17px;text-align:center}
+.search{background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);border-radius:10px;padding:9px 14px;display:flex;align-items:center;gap:8px;color:rgba(255,255,255,0.6);font-size:12px}
+.frete-banner{background:#FF6B35;padding:7px 14px;text-align:center;color:#fff;font-size:11px;font-weight:700}
+.content{background:#f0f4f0;padding:12px}
+
+.cats{display:flex;gap:7px;margin-bottom:16px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
+.cats::-webkit-scrollbar{display:none}
+.cat{flex-shrink:0;background:#fff;border:1.5px solid #ddd;border-radius:20px;padding:5px 12px;font-size:11px;font-weight:600;color:#555;cursor:pointer;white-space:nowrap;transition:all 0.15s}
+.cat.active{background:#1B5E3B;color:#fff;border-color:#1B5E3B}
+
+.section-title{font-size:13px;font-weight:700;color:#1B5E3B;margin-bottom:10px;display:flex;justify-content:space-between}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:14px}
+.prod{background:#fff;border-radius:12px;overflow:hidden;border:1px solid #e8e8e8;cursor:pointer;transition:transform 0.15s}
+.prod:active{transform:scale(0.97)}
+.prod.hidden{display:none}
+.prod-img{height:82px;display:flex;align-items:center;justify-content:center;font-size:40px;position:relative}
+.prod-bdg{position:absolute;top:5px;left:5px;background:#FF6B35;color:#fff;font-size:8px;font-weight:800;padding:2px 7px;border-radius:999px}
+.prod-body{padding:9px}
+.prod-name{font-size:11px;font-weight:700;color:#1a1a1a;margin-bottom:1px}
+.prod-desc{font-size:9px;color:#999;margin-bottom:7px}
+.prod-row{display:flex;align-items:center;justify-content:space-between}
+.prod-old{font-size:9px;color:#ccc;text-decoration:line-through}
+.prod-price{font-size:14px;font-weight:800;color:#1B5E3B}
+.add-btn{background:#1B5E3B;border:none;border-radius:7px;color:#fff;font-size:17px;width:27px;height:27px;cursor:pointer}
+
+.zap-card{background:#fff;border-radius:14px;padding:14px;margin-bottom:12px;border:1px solid #e0e0e0}
+.zap-title{font-size:13px;font-weight:700;color:#1a1a1a;margin-bottom:3px}
+.zap-sub{font-size:10px;color:#999;margin-bottom:11px}
+.zap-btn{background:#25D366;border:none;border-radius:10px;color:#fff;font-size:13px;font-weight:700;padding:12px;width:100%;cursor:pointer}
+
+.bottomnav{background:#fff;border-top:1px solid #eee;display:flex;justify-content:space-around;padding:8px 0 14px}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:9px;color:#aaa;cursor:pointer}
+.nav-item.active{color:#1B5E3B;font-weight:700}
+.nav-item span{font-size:20px}
+
+/* TELA PRODUTO */
+.topbar-prod{background:#1B5E3B;padding:10px 14px 14px;display:flex;align-items:center;gap:10px}
+.topbar-prod span{color:#fff;font-size:15px;font-weight:700}
+.back-btn{background:none;border:none;font-size:22px;cursor:pointer;color:#fff;padding:4px}
+.prod-hero{height:180px;display:flex;align-items:center;justify-content:center;font-size:80px}
+.prod-detail{padding:16px}
+.prod-detail-name{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:#1a1a1a;margin-bottom:4px}
+.prod-detail-sub{font-size:12px;color:#999;margin-bottom:14px}
+.tags{display:flex;gap:8px;margin-bottom:16px}
+.tag{background:#e8f5e9;color:#1B5E3B;font-size:10px;font-weight:700;padding:4px 10px;border-radius:999px}
+.tag-o{background:#fff3e0;color:#e65100}
+.price-box{background:#f0f4f0;border-radius:14px;padding:14px;margin-bottom:16px}
+.price-old{font-size:12px;color:#bbb;text-decoration:line-through}
+.price-main{font-size:26px;font-weight:800;color:#1B5E3B}
+.frete-tag{font-size:10px;background:#e8f5e9;color:#2e7d32;padding:3px 10px;border-radius:999px;font-weight:700;display:inline-block;margin-top:6px}
+.qty-box{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.qty-label{font-size:13px;font-weight:700;color:#1a1a1a}
+.qty-ctrl2{display:flex;align-items:center;gap:12px}
+.qty-btn2{background:#f0f4f0;border:none;border-radius:8px;width:32px;height:32px;font-size:18px;font-weight:700;cursor:pointer;color:#1B5E3B}
+.qty-num2{font-size:16px;font-weight:800;min-width:20px;text-align:center}
+.comprar-btn{background:#1B5E3B;border:none;border-radius:12px;color:#fff;font-size:14px;font-weight:700;padding:14px;width:100%;cursor:pointer}
+
+/* TELA CARRINHO */
+.cart-item{display:flex;align-items:center;gap:10px;background:#fff;border-radius:12px;padding:12px;margin-bottom:8px;border:1px solid #e8e8e8}
+.cart-emoji{width:44px;height:44px;background:#f0f4f0;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
+.cart-info{flex:1}
+.cart-name{font-size:12px;font-weight:700;color:#1a1a1a;margin-bottom:2px}
+.cart-qty{font-size:10px;color:#999}
+.cart-val{font-size:14px;font-weight:800;color:#1B5E3B}
+.total-box{background:#fff;border-radius:14px;padding:14px;margin-bottom:12px;border:1px solid #e0e0e0}
+.total-line{display:flex;justify-content:space-between;font-size:12px;color:#777;margin-bottom:8px}
+.total-frete{display:flex;justify-content:space-between;font-size:12px;color:#2e7d32;font-weight:700;margin-bottom:12px}
+.total-final{display:flex;justify-content:space-between;align-items:center;border-top:1px solid #eee;padding-top:12px}
+.total-final-label{font-size:13px;font-weight:700;color:#1a1a1a}
+.total-final-val{font-size:22px;font-weight:800;color:#1B5E3B}
+.checkout-btn{background:#1B5E3B;border:none;border-radius:12px;color:#fff;font-size:14px;font-weight:700;padding:14px;width:100%;cursor:pointer;margin-bottom:8px}
+.zap-checkout-btn{background:#25D366;border:none;border-radius:12px;color:#fff;font-size:14px;font-weight:700;padding:14px;width:100%;cursor:pointer}
+
+/* TELA CONFIRMAÇÃO */
+.confirm-screen{padding:30px 20px;text-align:center}
+.confirm-icon{font-size:70px;margin-bottom:16px}
+.confirm-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#1B5E3B;margin-bottom:8px}
+.confirm-sub{font-size:13px;color:#666;line-height:1.6;margin-bottom:24px}
+.confirm-card{background:#f0f4f0;border-radius:14px;padding:16px;margin-bottom:20px;text-align:left}
+.confirm-line{display:flex;justify-content:space-between;font-size:12px;color:#555;margin-bottom:6px}
+.voltar-btn{background:#1B5E3B;border:none;border-radius:12px;color:#fff;font-size:14px;font-weight:700;padding:14px;width:100%;cursor:pointer}
+
+/* TELA ZAP */
+.chat-header-bar{background:#075E54;padding:12px 14px;display:flex;align-items:center;gap:10px}
+.chat-avatar{width:36px;height:36px;border-radius:50%;background:#25D366;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.chat-name2{color:#fff;font-size:14px;font-weight:700}
+.chat-status2{color:rgba(255,255,255,0.7);font-size:10px}
+.chat-body{background:#ECE5DD;padding:12px;min-height:360px;display:flex;flex-direction:column;gap:8px}
+.msg{max-width:82%;padding:9px 12px;border-radius:10px;font-size:12px;line-height:1.5}
+.msg-bot{background:#fff;border-radius:0 10px 10px 10px;align-self:flex-start;color:#1a1a1a}
+.msg-user{background:#DCF8C6;border-radius:10px 0 10px 10px;align-self:flex-end;color:#1a1a1a}
+.msg-time{font-size:9px;color:#999;text-align:right;margin-top:3px}
+.chat-input-bar{background:#f0f0f0;padding:8px 10px;display:flex;align-items:center;gap:8px}
+.chat-input{flex:1;background:#fff;border:none;border-radius:20px;padding:9px 14px;font-size:12px;color:#333}
+.send-btn{background:#25D366;border:none;border-radius:50%;width:36px;height:36px;color:#fff;font-size:16px;cursor:pointer}
+
+/* TOAST */
+.toast{position:fixed;bottom:120px;left:50%;transform:translateX(-50%);background:#1B5E3B;color:#fff;padding:10px 20px;border-radius:20px;font-size:12px;font-weight:700;display:none;z-index:999;white-space:nowrap}
+.toast.show{display:block}
+</style>
+</head>
+<body>
+
+<div class="demo-label">📱 Demo interativo — Drogaria Diamante</div>
+
+<div class="phone">
+  <div class="notch"><div class="notch-inner"></div></div>
+
+  <!-- ===== HOME ===== -->
+  <div class="screen active" id="s-home">
+    <div class="status"><span>9:41</span><span>●●● 100%</span></div>
+    <div class="topbar">
+      <div class="topbar-row">
+        <div class="logo-area">
+          <div class="logo-icon">💎</div>
+          <div><div class="logo-text">Drogaria Diamante</div><div class="logo-sub">Diamantina, MG · Aberta agora</div></div>
+        </div>
+        <button class="icon-btn" onclick="ir('s-carrinho')">🛒<span class="badge" id="badge">0</span></button>
+      </div>
+      <div class="search">🔍 &nbsp;Buscar medicamento ou produto...</div>
+    </div>
+    <div class="frete-banner">🚚 ENTREGA GRÁTIS em Diamantina · Pedido mínimo R$ 30,00</div>
+    <div class="content">
+      <div class="cats" id="cats-home">
+        <div class="cat active" onclick="filtrar('todos',this)">Todos</div>
+        <div class="cat" onclick="filtrar('hipertensao',this)">Hipertensão</div>
+        <div class="cat" onclick="filtrar('vitaminas',this)">Vitaminas</div>
+        <div class="cat" onclick="filtrar('dor',this)">Dor e Febre</div>
+        <div class="cat" onclick="filtrar('diabetes',this)">Diabetes</div>
+        <div class="cat" onclick="filtrar('beleza',this)">Beleza</div>
+      </div>
+      <div class="section-title">Produtos</div>
+      <div class="grid" id="grid-home">
+        <div class="prod" data-cat="hipertensao" onclick="abrirProd('losartana')">
+          <div class="prod-img" style="background:#e8f5e9">💊<div class="prod-bdg">-15%</div></div>
+          <div class="prod-body">
+            <div class="prod-name">Losartana 50mg</div>
+            <div class="prod-desc">30 comprimidos</div>
+            <div class="prod-row"><div><div class="prod-old">R$ 22,00</div><div class="prod-price">R$ 18,90</div></div><button class="add-btn" onclick="event.stopPropagation();addCart('Losartana 50mg','💊',18.90)">+</button></div>
+          </div>
+        </div>
+        <div class="prod" data-cat="dor" onclick="abrirProd('dipirona')">
+          <div class="prod-img" style="background:#fff3e0">🌡️<div class="prod-bdg">OFERTA</div></div>
+          <div class="prod-body">
+            <div class="prod-name">Dipirona 500mg</div>
+            <div class="prod-desc">20 comprimidos</div>
+            <div class="prod-row"><div><div class="prod-old">R$ 12,00</div><div class="prod-price">R$ 9,50</div></div><button class="add-btn" onclick="event.stopPropagation();addCart('Dipirona 500mg','🌡️',9.50)">+</button></div>
+          </div>
+        </div>
+        <div class="prod" data-cat="vitaminas" onclick="abrirProd('vitamina')">
+          <div class="prod-img" style="background:#fffde7">☀️</div>
+          <div class="prod-body">
+            <div class="prod-name">Vitamina D 2000UI</div>
+            <div class="prod-desc">60 cápsulas</div>
+            <div class="prod-row"><div><div class="prod-old">&nbsp;</div><div class="prod-price">R$ 24,90</div></div><button class="add-btn" onclick="event.stopPropagation();addCart('Vitamina D 2000UI','☀️',24.90)">+</button></div>
+          </div>
+        </div>
+        <div class="prod" data-cat="dor" onclick="abrirProd('omeprazol')">
+          <div class="prod-img" style="background:#f3e5f5">💜<div class="prod-bdg">-20%</div></div>
+          <div class="prod-body">
+            <div class="prod-name">Omeprazol 20mg</div>
+            <div class="prod-desc">28 cápsulas</div>
+            <div class="prod-row"><div><div class="prod-old">R$ 18,50</div><div class="prod-price">R$ 14,90</div></div><button class="add-btn" onclick="event.stopPropagation();addCart('Omeprazol 20mg','💜',14.90)">+</button></div>
+          </div>
+        </div>
+        <div class="prod" data-cat="hipertensao" onclick="abrirProd('atenolol')">
+          <div class="prod-img" style="background:#e3f2fd">💙</div>
+          <div class="prod-body">
+            <div class="prod-name">Atenolol 25mg</div>
+            <div class="prod-desc">30 comprimidos</div>
+            <div class="prod-row"><div><div class="prod-old">&nbsp;</div><div class="prod-price">R$ 11,90</div></div><button class="add-btn" onclick="event.stopPropagation();addCart('Atenolol 25mg','💙',11.90)">+</button></div>
+          </div>
+        </div>
+        <div class="prod" data-cat="dor" onclick="abrirProd('paracetamol')">
+          <div class="prod-img" style="background:#fce4ec">🔴<div class="prod-bdg">POPULAR</div></div>
+          <div class="prod-body">
+            <div class="prod-name">Paracetamol 750mg</div>
+            <div class="prod-desc">20 comprimidos</div>
+            <div class="prod-row"><div><div class="prod-old">&nbsp;</div><div class="prod-price">R$ 7,90</div></div><button class="add-btn" onclick="event.stopPropagation();addCart('Paracetamol 750mg','🔴',7.90)">+</button></div>
+          </div>
+        </div>
+        <div class="prod" data-cat="vitaminas" onclick="abrirProd('omega')">
+          <div class="prod-img" style="background:#e8f5e9">🌿</div>
+          <div class="prod-body">
+            <div class="prod-name">Ômega 3 1000mg</div>
+            <div class="prod-desc">60 cápsulas</div>
+            <div class="prod-row"><div><div class="prod-old">&nbsp;</div><div class="prod-price">R$ 27,90</div></div><button class="add-btn" onclick="event.stopPropagation();addCart('Ômega 3 1000mg','🌿',27.90)">+</button></div>
+          </div>
+        </div>
+        <div class="prod" data-cat="diabetes" onclick="abrirProd('metformina')">
+          <div class="prod-img" style="background:#e3f2fd">🩺</div>
+          <div class="prod-body">
+            <div class="prod-name">Metformina 850mg</div>
+            <div class="prod-desc">30 comprimidos</div>
+            <div class="prod-row"><div><div class="prod-old">&nbsp;</div><div class="prod-price">R$ 16,50</div></div><button class="add-btn" onclick="event.stopPropagation();addCart('Metformina 850mg','🩺',16.50)">+</button></div>
+          </div>
+        </div>
+        <div class="prod" data-cat="beleza" onclick="abrirProd('protetor')">
+          <div class="prod-img" style="background:#fff9c4">🌞</div>
+          <div class="prod-body">
+            <div class="prod-name">Protetor Solar FPS50</div>
+            <div class="prod-desc">120ml</div>
+            <div class="prod-row"><div><div class="prod-old">R$ 42,00</div><div class="prod-price">R$ 34,90</div></div><button class="add-btn" onclick="event.stopPropagation();addCart('Protetor Solar FPS50','🌞',34.90)">+</button></div>
+          </div>
+        </div>
+        <div class="prod" data-cat="beleza" onclick="abrirProd('hidratante')">
+          <div class="prod-img" style="background:#fce4ec">🧴</div>
+          <div class="prod-body">
+            <div class="prod-name">Hidratante Corporal</div>
+            <div class="prod-desc">200ml · Sem perfume</div>
+            <div class="prod-row"><div><div class="prod-old">&nbsp;</div><div class="prod-price">R$ 19,90</div></div><button class="add-btn" onclick="event.stopPropagation();addCart('Hidratante Corporal','🧴',19.90)">+</button></div>
+          </div>
+        </div>
+      </div>
+      <div class="zap-card">
+        <div class="zap-title">💬 Prefere falar com a gente?</div>
+        <div class="zap-sub">Nossa equipe responde rapidinho — inclusive à noite!</div>
+        <button class="zap-btn" onclick="ir('s-zap')">📲 &nbsp;Chamar no WhatsApp</button>
+      </div>
+    </div>
+    <div class="bottomnav">
+      <div class="nav-item active" onclick="ir('s-home')"><span>🏠</span>Início</div>
+      <div class="nav-item" onclick="ir('s-home')"><span>🔍</span>Buscar</div>
+      <div class="nav-item" onclick="ir('s-home')"><span>💊</span>Receitas</div>
+      <div class="nav-item" onclick="ir('s-home')"><span>⭐</span>Pontos</div>
+      <div class="nav-item" onclick="ir('s-carrinho')"><span>🛒</span>Carrinho</div>
+    </div>
+  </div>
+
+  <!-- ===== PRODUTO ===== -->
+  <div class="screen" id="s-produto">
+    <div class="status"><span>9:41</span><span>●●● 100%</span></div>
+    <div class="topbar-prod">
+      <button class="back-btn" onclick="ir('s-home')">◀</button>
+      <span id="prod-topo">Produto</span>
+    </div>
+    <div class="prod-hero" id="prod-hero" style="background:#e8f5e9">💊</div>
+    <div class="prod-detail">
+      <div class="prod-detail-name" id="prod-nome">Losartana 50mg</div>
+      <div class="prod-detail-sub" id="prod-sub">30 comprimidos</div>
+      <div class="tags">
+        <div class="tag" id="prod-tag1">Hipertensão</div>
+        <div class="tag tag-o" id="prod-tag2">-15% OFF</div>
+      </div>
+      <div class="price-box">
+        <div class="price-old" id="prod-old">R$ 22,00</div>
+        <div class="price-main" id="prod-price">R$ 18,90</div>
+        <div class="frete-tag">🚚 Frete grátis</div>
+      </div>
+      <div class="qty-box">
+        <div class="qty-label">Quantidade</div>
+        <div class="qty-ctrl2">
+          <button class="qty-btn2" onclick="chgQty(-1)">−</button>
+          <div class="qty-num2" id="qty-disp">1</div>
+          <button class="qty-btn2" onclick="chgQty(1)">+</button>
+        </div>
+      </div>
+      <button class="comprar-btn" onclick="addCartFromProd()">🛒 &nbsp;Adicionar ao carrinho</button>
+    </div>
+    <div class="bottomnav">
+      <div class="nav-item" onclick="ir('s-home')"><span>🏠</span>Início</div>
+      <div class="nav-item"><span>🔍</span>Buscar</div>
+      <div class="nav-item"><span>💊</span>Receitas</div>
+      <div class="nav-item"><span>⭐</span>Pontos</div>
+      <div class="nav-item" onclick="ir('s-carrinho')"><span>🛒</span>Carrinho</div>
+    </div>
+  </div>
+
+  <!-- ===== CARRINHO ===== -->
+  <div class="screen" id="s-carrinho">
+    <div class="status"><span>9:41</span><span>●●● 100%</span></div>
+    <div class="topbar-prod">
+      <button class="back-btn" onclick="ir('s-home')">◀</button>
+      <span>Meu carrinho</span>
+    </div>
+    <div class="content">
+      <div id="cart-items"></div>
+      <div id="cart-vazio" style="text-align:center;padding:40px 20px;color:#999;font-size:13px">
+        🛒<br><br>Seu carrinho está vazio!<br>
+        <button onclick="ir('s-home')" style="margin-top:12px;background:#1B5E3B;border:none;border-radius:10px;color:#fff;padding:10px 20px;font-size:13px;font-weight:700;cursor:pointer">Ver produtos</button>
+      </div>
+      <div id="cart-total-box" style="display:none">
+        <div class="total-box">
+          <div class="total-line"><span>Subtotal</span><span id="subtotal-val">R$ 0,00</span></div>
+          <div class="total-frete"><span>🚚 Frete</span><span>GRÁTIS</span></div>
+          <div class="total-final">
+            <div class="total-final-label">Total</div>
+            <div class="total-final-val" id="total-val">R$ 0,00</div>
+          </div>
+        </div>
+        <button class="checkout-btn" onclick="ir('s-confirmar')">✅ &nbsp;Finalizar pedido</button>
+        <button class="zap-checkout-btn" onclick="ir('s-zap')">📲 &nbsp;Finalizar pelo WhatsApp</button>
+      </div>
+    </div>
+    <div class="bottomnav">
+      <div class="nav-item" onclick="ir('s-home')"><span>🏠</span>Início</div>
+      <div class="nav-item"><span>🔍</span>Buscar</div>
+      <div class="nav-item"><span>💊</span>Receitas</div>
+      <div class="nav-item"><span>⭐</span>Pontos</div>
+      <div class="nav-item active"><span>🛒</span>Carrinho</div>
+    </div>
+  </div>
+
+  <!-- ===== CONFIRMAÇÃO ===== -->
+  <div class="screen" id="s-confirmar">
+    <div class="status"><span>9:41</span><span>●●● 100%</span></div>
+    <div class="topbar-prod" style="justify-content:center"><span>Pedido confirmado</span></div>
+    <div class="confirm-screen">
+      <div class="confirm-icon">✅</div>
+      <div class="confirm-title">Pedido recebido!</div>
+      <div class="confirm-sub">Sua entrega está sendo preparada.<br>Você receberá uma confirmação<br>no WhatsApp em instantes.</div>
+      <div class="confirm-card" id="confirm-lista"></div>
+      <div style="font-size:11px;color:#999;margin-bottom:16px">Previsão de entrega: até 60 minutos 🏍️</div>
+      <button class="voltar-btn" onclick="limparCarrinho()">🏠 &nbsp;Voltar ao início</button>
+    </div>
+  </div>
+
+  <!-- ===== WHATSAPP ===== -->
+  <div class="screen" id="s-zap">
+    <div class="status" style="background:#075E54"><span>9:41</span><span>●●● 100%</span></div>
+    <div class="chat-header-bar">
+      <button class="back-btn" onclick="ir('s-home')">◀</button>
+      <div class="chat-avatar">💎</div>
+      <div><div class="chat-name2">Drogaria Diamante</div><div class="chat-status2">online agora</div></div>
+    </div>
+    <div class="chat-body">
+      <div class="msg msg-bot">Olá! 😊 Bem-vindo à Drogaria Diamante!<br>Como posso te ajudar hoje?<div class="msg-time">09:41 ✓✓</div></div>
+      <div class="msg msg-user">Boa tarde! Vocês têm Losartana 50mg?<div class="msg-time">09:42 ✓✓</div></div>
+      <div class="msg msg-bot">Sim, temos em estoque! 🎉<br><strong>Losartana 50mg</strong> – R$ 18,90<br>(caixa com 30 comprimidos)<br><br>Quer reservar para entrega? 🚚<div class="msg-time">09:42 ✓✓</div></div>
+      <div class="msg msg-user">Sim! Entrega grátis mesmo?<div class="msg-time">09:43 ✓✓</div></div>
+      <div class="msg msg-bot">Sim! Entrega 100% gratuita aqui em Diamantina 🚚✅<br><br>Me informa seu endereço e nome que já separo o pedido!<div class="msg-time">09:43 ✓✓</div></div>
+      <div class="msg msg-user">Rua das Mercês, 45. Me chamo João.<div class="msg-time">09:44 ✓✓</div></div>
+      <div class="msg msg-bot">Perfeito, João! 😊<br>💊 Losartana 50mg — R$ 18,90<br>🚚 Frete: GRÁTIS<br><br>Entrega em até 60 minutos!<div class="msg-time">09:44 ✓✓</div></div>
+    </div>
+    <div class="chat-input-bar">
+      <input class="chat-input" placeholder="Digite uma mensagem..." readonly>
+      <button class="send-btn" onclick="ir('s-home')">⬆</button>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast">✅ Adicionado!</div>
+
+<div style="margin-top:20px;background:rgba(255,255,255,0.1);border-radius:14px;padding:12px 20px;color:rgba(255,255,255,0.7);font-size:12px;text-align:center;max-width:375px">
+  💡 Clique nos produtos para ver detalhes · Use as categorias para filtrar · Adicione ao carrinho e finalize o pedido!
+</div>
+
+<script>
+const prods={
+  losartana:{nome:'Losartana 50mg',sub:'30 comprimidos · Uso contínuo',emoji:'💊',bg:'#e8f5e9',old:'R$ 22,00',price:'R$ 18,90',preco:18.90,tag1:'Hipertensão',tag2:'-15% OFF'},
+  dipirona:{nome:'Dipirona 500mg',sub:'20 comprimidos · Dor e febre',emoji:'🌡️',bg:'#fff3e0',old:'R$ 12,00',price:'R$ 9,50',preco:9.50,tag1:'Dor e Febre',tag2:'OFERTA'},
+  vitamina:{nome:'Vitamina D 2000UI',sub:'60 cápsulas · Imunidade',emoji:'☀️',bg:'#fffde7',old:'',price:'R$ 24,90',preco:24.90,tag1:'Vitaminas',tag2:'Recomendado'},
+  omeprazol:{nome:'Omeprazol 20mg',sub:'28 cápsulas · Estômago',emoji:'💜',bg:'#f3e5f5',old:'R$ 18,50',price:'R$ 14,90',preco:14.90,tag1:'Digestivo',tag2:'-20% OFF'},
+  atenolol:{nome:'Atenolol 25mg',sub:'30 comprimidos · Coração',emoji:'💙',bg:'#e3f2fd',old:'',price:'R$ 11,90',preco:11.90,tag1:'Hipertensão',tag2:'Genérico'},
+  paracetamol:{nome:'Paracetamol 750mg',sub:'20 comprimidos · Dor e febre',emoji:'🔴',bg:'#fce4ec',old:'',price:'R$ 7,90',preco:7.90,tag1:'Dor e Febre',tag2:'POPULAR'},
+  omega:{nome:'Ômega 3 1000mg',sub:'60 cápsulas · Coração e cérebro',emoji:'🌿',bg:'#e8f5e9',old:'',price:'R$ 27,90',preco:27.90,tag1:'Vitaminas',tag2:'Natural'},
+  metformina:{nome:'Metformina 850mg',sub:'30 comprimidos · Diabetes',emoji:'🩺',bg:'#e3f2fd',old:'',price:'R$ 16,50',preco:16.50,tag1:'Diabetes',tag2:'Genérico'},
+  protetor:{nome:'Protetor Solar FPS50',sub:'120ml · Pele sensível',emoji:'🌞',bg:'#fff9c4',old:'R$ 42,00',price:'R$ 34,90',preco:34.90,tag1:'Beleza',tag2:'-17% OFF'},
+  hidratante:{nome:'Hidratante Corporal',sub:'200ml · Sem perfume',emoji:'🧴',bg:'#fce4ec',old:'',price:'R$ 19,90',preco:19.90,tag1:'Beleza',tag2:'Dermato'}
+};
+
+let qtyAtual=1;
+let prodAtual=null;
+let carrinho=[];
+
+function ir(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if(id==='s-carrinho') renderCarrinho();
+  if(id==='s-confirmar') renderConfirm();
+}
+
+function filtrar(cat, el){
+  document.querySelectorAll('.cat').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.prod').forEach(p=>{
+    if(cat==='todos' || p.dataset.cat===cat) p.classList.remove('hidden');
+    else p.classList.add('hidden');
+  });
+}
+
+function abrirProd(key){
+  const p=prods[key];
+  prodAtual=p;
+  qtyAtual=1;
+  document.getElementById('prod-topo').textContent=p.nome;
+  const hero=document.getElementById('prod-hero');
+  hero.style.background=p.bg;
+  hero.textContent=p.emoji;
+  document.getElementById('prod-nome').textContent=p.nome;
+  document.getElementById('prod-sub').textContent=p.sub;
+  document.getElementById('prod-old').textContent=p.old;
+  document.getElementById('prod-price').textContent=p.price;
+  document.getElementById('prod-tag1').textContent=p.tag1;
+  document.getElementById('prod-tag2').textContent=p.tag2;
+  document.getElementById('qty-disp').textContent='1';
+  ir('s-produto');
+}
+
+function chgQty(d){
+  qtyAtual=Math.max(1,qtyAtual+d);
+  document.getElementById('qty-disp').textContent=qtyAtual;
+}
+
+function addCart(nome,emoji,preco){
+  const idx=carrinho.findIndex(i=>i.nome===nome);
+  if(idx>=0) carrinho[idx].qty++;
+  else carrinho.push({nome,emoji,preco,qty:1});
+  atualizarBadge();
+  mostrarToast('✅ '+nome+' adicionado!');
+}
+
+function addCartFromProd(){
+  if(!prodAtual) return;
+  const idx=carrinho.findIndex(i=>i.nome===prodAtual.nome);
+  if(idx>=0) carrinho[idx].qty+=qtyAtual;
+  else carrinho.push({nome:prodAtual.nome,emoji:prodAtual.emoji,preco:prodAtual.preco,qty:qtyAtual});
+  atualizarBadge();
+  mostrarToast('✅ Adicionado ao carrinho!');
+  ir('s-carrinho');
+}
+
+function atualizarBadge(){
+  const total=carrinho.reduce((s,i)=>s+i.qty,0);
+  document.getElementById('badge').textContent=total;
+}
+
+function renderCarrinho(){
+  const el=document.getElementById('cart-items');
+  const vazio=document.getElementById('cart-vazio');
+  const totalBox=document.getElementById('cart-total-box');
+  if(carrinho.length===0){
+    el.innerHTML='';
+    vazio.style.display='block';
+    totalBox.style.display='none';
+    return;
+  }
+  vazio.style.display='none';
+  totalBox.style.display='block';
+  el.innerHTML=carrinho.map((item,i)=>`
+    <div class="cart-item">
+      <div class="cart-emoji">${item.emoji}</div>
+      <div class="cart-info">
+        <div class="cart-name">${item.nome}</div>
+        <div style="display:flex;align-items:center;gap:8px;margin-top:4px">
+          <button onclick="alterarQty(${i},-1)" style="background:#f0f4f0;border:none;border-radius:6px;width:22px;height:22px;font-size:14px;font-weight:700;cursor:pointer;color:#1B5E3B">−</button>
+          <span style="font-size:12px;font-weight:700">${item.qty}</span>
+          <button onclick="alterarQty(${i},1)" style="background:#f0f4f0;border:none;border-radius:6px;width:22px;height:22px;font-size:14px;font-weight:700;cursor:pointer;color:#1B5E3B">+</button>
+        </div>
+      </div>
+      <div class="cart-val">R$ ${(item.preco*item.qty).toFixed(2).replace('.',',')}</div>
+    </div>
+  `).join('');
+  const total=carrinho.reduce((s,i)=>s+i.preco*i.qty,0);
+  document.getElementById('subtotal-val').textContent='R$ '+total.toFixed(2).replace('.',',');
+  document.getElementById('total-val').textContent='R$ '+total.toFixed(2).replace('.',',');
+}
+
+function alterarQty(i,d){
+  carrinho[i].qty=Math.max(0,carrinho[i].qty+d);
+  if(carrinho[i].qty===0) carrinho.splice(i,1);
+  atualizarBadge();
+  renderCarrinho();
+}
+
+function renderConfirm(){
+  const lista=document.getElementById('confirm-lista');
+  const total=carrinho.reduce((s,i)=>s+i.preco*i.qty,0);
+  lista.innerHTML=carrinho.map(i=>`
+    <div class="confirm-line"><span>${i.emoji} ${i.nome} x${i.qty}</span><span>R$ ${(i.preco*i.qty).toFixed(2).replace('.',',')}</span></div>
+  `).join('')+`
+    <div class="confirm-line"><span>🚚 Frete</span><span style="color:#25D366">GRÁTIS</span></div>
+    <div style="border-top:1px solid #ddd;margin:8px 0"></div>
+    <div class="confirm-line" style="font-weight:700;font-size:14px;color:#1B5E3B"><span>Total</span><span>R$ ${total.toFixed(2).replace('.',',')}</span></div>
+  `;
+}
+
+function limparCarrinho(){
+  carrinho=[];
+  atualizarBadge();
+  ir('s-home');
+}
+
+function mostrarToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2000);
+}
+</script>
+</body>
+</html>
